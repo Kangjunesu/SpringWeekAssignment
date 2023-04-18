@@ -4,10 +4,7 @@ import com.sparta.springweekassignment.dto.BlogRequestDto;
 import com.sparta.springweekassignment.entity.Blog;
 import com.sparta.springweekassignment.service.BlogService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,10 +20,20 @@ public class BlogController {
     }
 
     @GetMapping("/api/blogs")
-    public List<Blog> getblogs() {  //클라이언트에서 전달해주는 Data는 없으므로 파라미터는 넣을 필요 없음
+    public List<Blog> getblogs() {
         return blogService.getblogs();
     }
 
+    //업데이트 = id, 비밀번호 확인하여 ->제목 내용 이름 수정
+    @PutMapping("/api/blogs/{id}")
+    public Long updateBlog(@PathVariable Long id, @RequestBody BlogRequestDto requestDto) {
+        return blogService.update(id, requestDto);
+    }
+
+    @DeleteMapping("/api/blogs/{id}")
+    public Long deleteBlog(@PathVariable Long id, @RequestBody BlogRequestDto requestDto) {
+        return blogService.deleteBlog(id, requestDto);
+    }
 
 
 }
