@@ -8,5 +8,4 @@ public class BlogRequestDto {  //객체로 이동하는 데이터 - 제목, 내�
     private String content;
     private String username;
     private String password;
-
 }
