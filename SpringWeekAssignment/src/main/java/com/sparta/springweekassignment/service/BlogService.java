@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +17,8 @@ public class BlogService {
     private final BlogRepository blogRepository;
 
     @Transactional
-    public Blog createBlog(BlogRequestDto requestDto) {
+    public Blog createBlog(BlogRequestDto requestDto,  HttpServletRequest request) {
+        // 토큰 체크 필요
         Blog blog = new Blog(requestDto);
         blogRepository.save(blog);
         return blog;

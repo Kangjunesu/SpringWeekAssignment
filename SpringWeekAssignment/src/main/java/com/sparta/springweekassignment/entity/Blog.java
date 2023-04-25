@@ -27,12 +27,6 @@ public class Blog extends Timestamped {
     @Column(nullable = false)
     private String password;
 
-    public Blog(String title, String contents, String username, String password) {
-        this.title = title;
-        this.contents = contents;
-        this.username = username;
-        this.password = password;
-    }
 
     public Blog(BlogRequestDto requestDto) {
         this.title = requestDto.getTitle();
