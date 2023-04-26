@@ -22,9 +22,13 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtUtil {
 
+    // Header KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
+    // 사용자 권한 값의 KEY
     public static final String AUTHORIZATION_KEY = "auth";
+    // Token 식별자
     private static final String BEARER_PREFIX = "Bearer ";
+    // 토큰 만료시간
     private static final long TOKEN_TIME = 60 * 60 * 1000L;
 
     @Value("${jwt.secret.key}")
@@ -38,7 +42,7 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    // header 토큰을 가져오기
+    // header에서 토큰 가져오기
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
@@ -47,7 +51,7 @@ public class JwtUtil {
         return null;
     }
 
-    // 토큰 생성
+    // JWT 생성
     public String createToken(String username) {
         Date date = new Date();
 
@@ -61,7 +65,7 @@ public class JwtUtil {
                         .compact();
     }
 
-    // 토큰 검증
+    //JWT 검증
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
