@@ -4,9 +4,7 @@ import com.sparta.springweekassignment.dto.LoginRequestDto;
 import com.sparta.springweekassignment.dto.SignupRequestDto;
 import com.sparta.springweekassignment.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -20,14 +18,11 @@ public class UserController {
 
 
     @PostMapping("/signup")
-    public String signup(SignupRequestDto signupRequestDto) {
-        String userName = signupRequestDto.getUsername();
-        String password = signupRequestDto.getPassword();
-        System.out.println(userName);
-        System.out.println(password);
+    public String signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
+        System.out.println("controller username:" + signupRequestDto.getUsername());
+        System.out.println("controller password:" + signupRequestDto.getPassword());
         return userService.signup(signupRequestDto);
-//        return "success";
-    }//dto : 유저네임, pw, email, 관리자 확인 boolean, 관리자인경우 토큰값
+    }
 
     @ResponseBody
     @PostMapping("/login")

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -36,6 +37,5 @@ public class BlogController {
     public Long deleteBlog(@PathVariable Long id, @RequestBody BlogRequestDto requestDto) {
         return blogService.deleteBlog(id, requestDto);
     }
-
 
 }
