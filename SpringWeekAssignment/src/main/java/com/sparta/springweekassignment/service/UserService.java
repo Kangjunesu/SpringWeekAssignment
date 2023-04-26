@@ -23,13 +23,10 @@ public class UserService {
 
     @Transactional   //회원가입 처리 메서드.
     public String signup(SignupRequestDto signupRequestDto) {
-
         String username = signupRequestDto.getUsername();
         String password = signupRequestDto.getPassword();
-
-        System.out.println("Service username:" + username);
-        System.out.println("Service password:"+ password);
-        //dto : 유저네임, pw
+//        System.out.println("Service username:" + username);
+//        System.out.println("Service password:"+ password);
 
         // 회원 중복 확인
         Optional<User> found = userRepository.findByUsername(username);
@@ -39,21 +36,19 @@ public class UserService {
             User user = new User(username, password);
             userRepository.save(user);
             return "회원가입 성공";
-        // 사용자 ROLE 확인
-        //UserRoleEnum role = UserRoleEnum.USER;  //UserRoleEnum에는 User와 Admain
     }
 
     @Transactional(readOnly = true)
     public void login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
-        //LoginRequestDto : username, pw
+        //LoginRequestDto : username, password
 
         // 사용자 확인 -> DB에서 사용자를 조회하고
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
         );
-        // 비밀번호가 일치하는지 확인
+        //-> 사용자가 있다면 비밀번호가 일치하는지 확인
         if(!user.getPassword().equals(password)){
             throw  new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
