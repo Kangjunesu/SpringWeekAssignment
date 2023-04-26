@@ -2,6 +2,7 @@ package com.sparta.springweekassignment.service;
 
 import com.sparta.springweekassignment.dto.BlogRequestDto;
 import com.sparta.springweekassignment.dto.BlogResponseDto;
+import com.sparta.springweekassignment.dto.UpdateResponseDto;
 import com.sparta.springweekassignment.entity.Blog;
 import com.sparta.springweekassignment.entity.User;
 import com.sparta.springweekassignment.jwt.JwtUtil;
@@ -27,13 +28,14 @@ public class BlogService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public Blog createBlog(BlogRequestDto requestDto,  HttpServletRequest request) {
+    public BlogResponseDto createBlog(BlogRequestDto requestDto,  HttpServletRequest request) {
 
         User user = checkJwtToken(request);
+
         Blog blog = new Blog(requestDto);
         blog.setUsername(user.getUsername());
         blogRepository.saveAndFlush(blog);
-        return blog;
+        return new BlogResponseDto(blog);
     }
 
     //모든 리스트 가져오기
@@ -58,39 +60,30 @@ public class BlogService {
 
     //업데이트
     @Transactional
-    public Long update(Long id, BlogRequestDto requestDto) {
+    public UpdateResponseDto update(Long id, BlogRequestDto requestDto, HttpServletRequest request) {
+        User user = checkJwtToken(request);
+
         Optional<Blog> optionalBlog = blogRepository.findById(id);
 
         if (!optionalBlog.isPresent()) {
-            throw new IllegalArgumentException("아이디가 존재하지 않습니다.");
+            throw new IllegalArgumentException("해당 글이 존재하지 않습니다.");
         }
         Blog blog = optionalBlog.get();
-        // 비밀번호 확인
-        String inputPassword = requestDto.getPassword();
-        String storedPassword = blog.getPassword();
-
-        if (!storedPassword.equals(inputPassword)) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
 
         blog.update(requestDto);
-        return blog.getId();
+        return new UpdateResponseDto(blog);
     }
 
     @Transactional
-    public Long deleteBlog(Long id,  BlogRequestDto requestDto) {
-        Optional<Blog> optionalBlog = blogRepository.findById(id);
-        Blog blog = optionalBlog.get();
+    public String deleteBlog(Long id, HttpServletRequest request) {
+        User user = checkJwtToken(request);
 
-        String inputPassword = requestDto.getPassword();
-        String storedPassword = blog.getPassword();
+        Blog blog = blogRepository.findById(id).orElseThrow(
+                () -> new NullPointerException("해당 글이 존재하지 않습니다.")
+        );
 
-        if (!storedPassword.equals(inputPassword)) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
-
-        blogRepository.deleteById(id);  //클라에서 받아온 id값을 파라미터로 -> 어떤 메모를 삭제할지
-        return id;
+        blogRepository.delete(blog);  //클라에서 받아온 id값을 파라미터로 -> 어떤 메모를 삭제할지
+        return "게시글을 삭제했습니다.";
     }
 
     public User checkJwtToken(HttpServletRequest request) {
@@ -100,19 +93,18 @@ public class BlogService {
 
         // 토큰이 있는 경우에만 게시글 접근 가능
         if (token != null) {
+
             if (jwtUtil.validateToken(token)) {
                 // 토큰에서 사용자 정보 가져오기
                 claims = jwtUtil.getUserInfoFromToken(token);
             } else {
                 throw new IllegalArgumentException("Token Error");
             }
-
             // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
             User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
             return user;
-
         }
         return null;
     }

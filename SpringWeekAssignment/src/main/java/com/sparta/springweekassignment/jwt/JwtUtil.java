@@ -1,7 +1,6 @@
 package com.sparta.springweekassignment.jwt;
 
 
-import com.sparta.springweekassignment.entity.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;

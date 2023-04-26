@@ -1,16 +1,14 @@
 package com.sparta.springweekassignment.dto;
 
-
 import com.sparta.springweekassignment.entity.Blog;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-
 @Getter
 @NoArgsConstructor
-public class BlogResponseDto {
+public class UpdateResponseDto {
     private Long id;
     private String title;
     private String content;
@@ -18,7 +16,7 @@ public class BlogResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
-    public BlogResponseDto(Blog blog) {
+    public UpdateResponseDto(Blog blog) {
         this.id = blog.getId();
         this.title = blog.getTitle();
         this.content = blog.getContent();

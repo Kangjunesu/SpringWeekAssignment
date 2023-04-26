@@ -2,6 +2,7 @@ package com.sparta.springweekassignment.controller;
 
 import com.sparta.springweekassignment.dto.BlogRequestDto;
 import com.sparta.springweekassignment.dto.BlogResponseDto;
+import com.sparta.springweekassignment.dto.UpdateResponseDto;
 import com.sparta.springweekassignment.entity.Blog;
 import com.sparta.springweekassignment.service.BlogService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class BlogController {
 
     //Create
     @PostMapping("/blogs")
-    public Blog createBlog(@RequestBody BlogRequestDto requestDto, HttpServletRequest request) {
+    public BlogResponseDto createBlog(@RequestBody BlogRequestDto requestDto, HttpServletRequest request) {
         return blogService.createBlog(requestDto, request);
     }
     //전체 게시물 목록 READ.
@@ -35,17 +36,18 @@ public class BlogController {
     @GetMapping("/blog/{id}")
     public BlogResponseDto getblog(@PathVariable Long id) {
         return blogService.getblog(id);
+    }
 
     //업데이트 = id, 비밀번호 확인하여 ->제목 내용 이름 수정
     //토큰을 검사한 후, 유효한 토큰이면서 해당 사용자가 작성한 게시글만 수정 가능
     //제목, 작성 내용을 수정하고 수정된 게시글을 Client 로 반환하기
-    @PutMapping("/blogs/{id}")
-    public Long updateBlog(@PathVariable Long id, @RequestBody BlogRequestDto requestDto, HttpServletRequest request) {
+    @PutMapping("/blog/{id}")
+    public UpdateResponseDto updateBlog(@PathVariable Long id, @RequestBody BlogRequestDto requestDto, HttpServletRequest request) {
         return blogService.update(id, requestDto, request);
     }
 
-    @DeleteMapping("/blogs/{id}")
-    public Long deleteBlog(@PathVariable Long id, HttpServletRequest request) {
+    @DeleteMapping("/blog/{id}")
+    public String deleteBlog(@PathVariable Long id, HttpServletRequest request) {
         return blogService.deleteBlog(id, request);
     }
 

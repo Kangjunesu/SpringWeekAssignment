@@ -21,7 +21,7 @@ public class Blog extends Timestamped {
     private String title;
 
     @Column(nullable = false)
-    private String contents;
+    private String content;
 
     @Column(nullable = false)
     private String username;
@@ -32,14 +32,14 @@ public class Blog extends Timestamped {
 
     public Blog(BlogRequestDto requestDto) {
         this.title = requestDto.getTitle();
-        this.contents = requestDto.getContent();
+        this.content = requestDto.getContent();
         this.username = requestDto.getUsername();
 //        this.password = requestDto.getPassword();
     }
 
     public void update(BlogRequestDto requestDto) {
         this.title = requestDto.getTitle();
-        this.contents = requestDto.getContent();
+        this.content = requestDto.getContent();
         this.username = requestDto.getUsername();
     }
 
