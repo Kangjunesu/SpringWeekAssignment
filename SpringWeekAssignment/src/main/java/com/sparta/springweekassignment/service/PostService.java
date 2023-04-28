@@ -9,6 +9,7 @@ import com.sparta.springweekassignment.repository.PostRepository;
 import com.sparta.springweekassignment.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,12 +27,14 @@ public class PostService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
+
+    //Create
     @Transactional
     public PostResponseDto createPost(PostRequestDto requestDto, HttpServletRequest request) {
 
         User user = checkJwtToken(request);
+        Post post = new Post(requestDto, user);
 
-        Post post = new Post(requestDto);
         post.setUsername(user.getUsername());
         postRepository.saveAndFlush(post);
         return new PostResponseDto(post);
@@ -85,8 +88,6 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
-
-
     //삭제
     @Transactional
     public String deletePost(Long id, HttpServletRequest request) {
@@ -109,23 +110,20 @@ public class PostService {
         // Request에서 Token 가져오기
         String token = jwtUtil.resolveToken(request);
         Claims claims;
-
-        // 토큰이 있는 경우에만 게시글 접근 가능
         if (token != null) {
-
             if (jwtUtil.validateToken(token)) {
-                // 토큰에서 사용자 정보 가져오기
                 claims = jwtUtil.getUserInfoFromToken(token);
             } else {
                 throw new IllegalArgumentException("Token Error");
             }
-            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
+
             User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
             return user;
+        } else {
+            throw new IllegalArgumentException("토큰이 존재하지 않습니다." + HttpStatus.BAD_REQUEST);
         }
-        return null;
     }
 
 
