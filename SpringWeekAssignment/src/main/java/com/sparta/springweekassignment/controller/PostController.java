@@ -2,7 +2,6 @@ package com.sparta.springweekassignment.controller;
 
 import com.sparta.springweekassignment.dto.PostRequestDto;
 import com.sparta.springweekassignment.dto.PostResponseDto;
-import com.sparta.springweekassignment.dto.UpdateResponseDto;
 import com.sparta.springweekassignment.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -36,16 +35,13 @@ public class PostController {
     public PostResponseDto getpost(@PathVariable Long id, HttpServletRequest request) {
         return postService.getpost(id, request);
     }
-//    @GetMapping("/blog/{id}")
-//    public PostResponseDto getblog(@PathVariable Long id) {
-//        return blogService.getblog(id);
-//    }
+
 
     //업데이트 = id, 비밀번호 확인하여 ->제목 내용 이름 수정
     //토큰을 검사한 후, 유효한 토큰이면서 해당 사용자가 작성한 게시글만 수정 가능
     //제목, 작성 내용을 수정하고 수정된 게시글을 Client 로 반환하기
     @PutMapping("/post/{id}")
-    public UpdateResponseDto updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto, HttpServletRequest request) {
+    public PostResponseDto updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto, HttpServletRequest request) {
         return postService.update(id, requestDto, request);
     }
 

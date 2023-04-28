@@ -19,8 +19,6 @@ public class UserController {
 
     @PostMapping("/signup")
     public String signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
-//        System.out.println("controller username:" + signupRequestDto.getUsername());
-//        System.out.println("controller password:" + signupRequestDto.getPassword());
         return userService.signup(signupRequestDto);
     }
 

@@ -1,12 +1,10 @@
 package com.sparta.springweekassignment.dto;
 
-
 import com.sparta.springweekassignment.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-
 
 @Getter
 @NoArgsConstructor

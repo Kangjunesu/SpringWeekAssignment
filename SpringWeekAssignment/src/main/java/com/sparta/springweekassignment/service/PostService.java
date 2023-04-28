@@ -2,7 +2,6 @@ package com.sparta.springweekassignment.service;
 
 import com.sparta.springweekassignment.dto.PostRequestDto;
 import com.sparta.springweekassignment.dto.PostResponseDto;
-import com.sparta.springweekassignment.dto.UpdateResponseDto;
 import com.sparta.springweekassignment.entity.Post;
 import com.sparta.springweekassignment.entity.User;
 import com.sparta.springweekassignment.jwt.JwtUtil;
@@ -67,7 +66,7 @@ public class PostService {
 
     //업데이트
     @Transactional
-    public UpdateResponseDto update(Long id, PostRequestDto requestDto, HttpServletRequest request) {
+    public PostResponseDto update(Long id, PostRequestDto requestDto, HttpServletRequest request) {
         User user = checkJwtToken(request);
 
         Optional<Post> optionalPost = postRepository.findById(id);
@@ -83,7 +82,7 @@ public class PostService {
         }
 
         post.update(requestDto);
-        return new UpdateResponseDto(post);
+        return new PostResponseDto(post);
     }
 
 
@@ -105,7 +104,7 @@ public class PostService {
         postRepository.delete(post);  //클라에서 받아온 id값을 파라미터로 -> 어떤 메모를 삭제할지
         return "게시글을 삭제했습니다.";
     }
-    
+
     public User checkJwtToken(HttpServletRequest request) {
         // Request에서 Token 가져오기
         String token = jwtUtil.resolveToken(request);
