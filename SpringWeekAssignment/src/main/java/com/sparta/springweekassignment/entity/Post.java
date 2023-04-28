@@ -1,6 +1,6 @@
 package com.sparta.springweekassignment.entity;
 
-import com.sparta.springweekassignment.dto.BlogRequestDto;
+import com.sparta.springweekassignment.dto.PostRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Setter
 @Entity
 @NoArgsConstructor
-public class Blog extends Timestamped {
+public class Post extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  //PK=ID
@@ -30,14 +30,14 @@ public class Blog extends Timestamped {
 //    private String password;
 
 
-    public Blog(BlogRequestDto requestDto) {
+    public Post(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
         this.username = requestDto.getUsername();
 //        this.password = requestDto.getPassword();
     }
 
-    public void update(BlogRequestDto requestDto) {
+    public void update(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
         this.username = requestDto.getUsername();

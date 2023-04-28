@@ -1,12 +1,12 @@
 package com.sparta.springweekassignment.service;
 
-import com.sparta.springweekassignment.dto.BlogRequestDto;
-import com.sparta.springweekassignment.dto.BlogResponseDto;
+import com.sparta.springweekassignment.dto.PostRequestDto;
+import com.sparta.springweekassignment.dto.PostResponseDto;
 import com.sparta.springweekassignment.dto.UpdateResponseDto;
-import com.sparta.springweekassignment.entity.Blog;
+import com.sparta.springweekassignment.entity.Post;
 import com.sparta.springweekassignment.entity.User;
 import com.sparta.springweekassignment.jwt.JwtUtil;
-import com.sparta.springweekassignment.repository.BlogRepository;
+import com.sparta.springweekassignment.repository.PostRepository;
 import com.sparta.springweekassignment.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -20,72 +20,92 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class BlogService {
+public class PostService {
 
 
-    private final BlogRepository blogRepository;
+    private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public BlogResponseDto createBlog(BlogRequestDto requestDto,  HttpServletRequest request) {
+    public PostResponseDto createPost(PostRequestDto requestDto, HttpServletRequest request) {
 
         User user = checkJwtToken(request);
 
-        Blog blog = new Blog(requestDto);
-        blog.setUsername(user.getUsername());
-        blogRepository.saveAndFlush(blog);
-        return new BlogResponseDto(blog);
+        Post post = new Post(requestDto);
+        post.setUsername(user.getUsername());
+        postRepository.saveAndFlush(post);
+        return new PostResponseDto(post);
     }
 
     //모든 리스트 가져오기
     @Transactional(readOnly = true)
-    public List<BlogResponseDto> getblogs() {
-        List<Blog> blogs = blogRepository.findAllByOrderByModifiedAtDesc();
-        List<BlogResponseDto> blogResponseDtos = new ArrayList<>();
-        for (Blog blog : blogs) {
-            blogResponseDtos.add(new BlogResponseDto(blog));
+    public List<PostResponseDto> getposts() {
+        List<Post> posts = postRepository.findAllByOrderByModifiedAtDesc();
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+        for (Post post : posts) {
+            postResponseDtos.add(new PostResponseDto(post));
         }
-        return blogResponseDtos;
+        return postResponseDtos;
     }
 
     //id에 해당하는 게시물 반환
     @Transactional(readOnly = true)  //(readOnly = true) 읽기에 특화된 옵션.
-    public BlogResponseDto getblog(Long id) {
-        Blog blog = blogRepository.findById(id).orElseThrow(
+    public PostResponseDto getpost(Long id, HttpServletRequest request) {
+        User user = checkJwtToken(request);
+
+        Post post = postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 글이 존재하지 않습니다.")
         );
-        return new BlogResponseDto(blog);
+
+        // 요청한 사용자의 게시글인지 확인
+        if (!post.getUsername().equals(user.getUsername())) {
+            throw new IllegalArgumentException("해당 글에 대한 접근 권한이 없습니다.");
+        }
+        return new PostResponseDto(post);
     }
 
     //업데이트
     @Transactional
-    public UpdateResponseDto update(Long id, BlogRequestDto requestDto, HttpServletRequest request) {
+    public UpdateResponseDto update(Long id, PostRequestDto requestDto, HttpServletRequest request) {
         User user = checkJwtToken(request);
 
-        Optional<Blog> optionalBlog = blogRepository.findById(id);
+        Optional<Post> optionalPost = postRepository.findById(id);
 
-        if (!optionalBlog.isPresent()) {
+        if (!optionalPost.isPresent()) {
             throw new IllegalArgumentException("해당 글이 존재하지 않습니다.");
         }
-        Blog blog = optionalBlog.get();
+        Post post = optionalPost.get();
 
-        blog.update(requestDto);
-        return new UpdateResponseDto(blog);
+        // 작성자와 요청한 사용자가 일치하는지 확인
+        if (!post.getUsername().equals(user.getUsername())) {
+            throw new IllegalArgumentException("수정 권한이 없습니다.");
+        }
+
+        post.update(requestDto);
+        return new UpdateResponseDto(post);
     }
 
+
+
+    //삭제
     @Transactional
-    public String deleteBlog(Long id, HttpServletRequest request) {
+    public String deletePost(Long id, HttpServletRequest request) {
         User user = checkJwtToken(request);
 
-        Blog blog = blogRepository.findById(id).orElseThrow(
+        Post post = postRepository.findById(id).orElseThrow(
                 () -> new NullPointerException("해당 글이 존재하지 않습니다.")
         );
 
-        blogRepository.delete(blog);  //클라에서 받아온 id값을 파라미터로 -> 어떤 메모를 삭제할지
+        // 작성자와 요청한 사용자가 일치하는지 확인
+        if (!post.getUsername().equals(user.getUsername())) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        }
+
+        postRepository.delete(post);  //클라에서 받아온 id값을 파라미터로 -> 어떤 메모를 삭제할지
         return "게시글을 삭제했습니다.";
     }
-
+    
     public User checkJwtToken(HttpServletRequest request) {
         // Request에서 Token 가져오기
         String token = jwtUtil.resolveToken(request);
