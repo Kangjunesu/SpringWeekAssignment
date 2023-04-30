@@ -21,7 +21,7 @@ public class Comment extends Timestamped {
     @Column(nullable = false)
     private String contents;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String username;
 
     @JsonIgnore
@@ -30,12 +30,12 @@ public class Comment extends Timestamped {
 //username 2번 들어감.
 
     @JsonIgnore
-    @ManyToOne
-    private Post post;
+    @ManyToOne//Post와 다대일관계
+    private Post post; //Comment 클래스의 post 필드가 연관 관계의 주인
 
     public Comment(CommentRequestDto commentRequestDto, User user, Post post) {
         this.contents = commentRequestDto.getContents();
-        this.username = user.getUsername();
+//        this.username = user.getUsername();
         this.user = user;
         this.post = post;
     }

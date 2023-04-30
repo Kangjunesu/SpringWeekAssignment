@@ -24,7 +24,7 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/login")
-    public String login(LoginRequestDto loginRequestDto, HttpServletResponse response) {  //리스폰스바디와 리퀘스트 바디가 다 적용
+    public String login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {  //리스폰스바디와 리퀘스트 바디가 다 적용
         userService.login(loginRequestDto, response);
         return "success";
     } //LoginRequestDto : username, pw

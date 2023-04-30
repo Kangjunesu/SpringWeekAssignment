@@ -24,7 +24,7 @@ public class CommentController {
     //댓글 수정
     @PutMapping("/{commentId}")
     public CommentResponseDto updateComment(@PathVariable Long commentId, @RequestBody CommentRequestDto requestDto, HttpServletRequest request){
-        return CommentService.updateComment(commentId, requestDto, request);
+        return commentService.updateComment(commentId, requestDto, request);
     }
 
     //댓글 삭제

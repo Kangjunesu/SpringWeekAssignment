@@ -29,12 +29,12 @@ public class Post extends Timestamped {
     private String username;
 
     @ManyToOne  //User와 다대일 관계
-    @JoinColumn(name = "user_id")  //@JoinColumn : 외래키 설정
-    private User user;
+    @JoinColumn(name = "user_id")
+    private User user;//외래키"user_id" 설정 ->User의 Pk('id')와 연결
 
     //하나의 게시물에 여러 댓글
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE) //cascade : 게시글 삭제시 관련 댓글도 삭제
-    @OrderBy("createdAt DESC")    // 댓글 목록 생성 시간 내림 차순
+    @OrderBy("createdAt DESC")
     private List<Comment> commentList = new ArrayList<>();
 
 
